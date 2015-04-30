@@ -263,17 +263,23 @@ export default Ember.Component.extend({
     });
   },
   _addSelection: function(obj) {
-    this.get('selection').addObject(obj);
+    var valuePath = this.get('_valuePath');
+    var item = valuePath ? get(obj, valuePath) : obj;
+
+    this.get('selection').addObject(item);
 
     Ember.run.schedule('actions', this, function() {
-      this.sendAction('add-item', obj);
+      this.sendAction('add-item', item);
     });
   },
   _removeSelection: function(obj) {
-    this.get('selection').removeObject(obj);
+    var valuePath = this.get('_valuePath');
+    var item = valuePath ? get(obj, valuePath) : obj;
+
+    this.get('selection').removeObject(item);
 
     Ember.run.schedule('actions', this, function() {
-      this.sendAction('remove-item', obj);
+      this.sendAction('remove-item', item);
     });
   },
   /**
@@ -381,7 +387,7 @@ export default Ember.Component.extend({
   */
   selectionObjectWasAdded: function(obj) {
     if (this._selectize) {
-      this._selectize.addItem(get(obj, this.get('_valuePath')));
+      this._selectize.addItem(obj);
     }
   },
   /*
@@ -389,7 +395,7 @@ export default Ember.Component.extend({
   */
   selectionObjectWasRemoved: function(obj) {
     if (this._selectize) {
-      this._selectize.removeItem(get(obj, this.get('_valuePath')));
+      this._selectize.removeItem(obj);
     }
   },
   /**
